@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
 
-const pomodoroTime = 1500; // 1500s = 25 min
-const shortBreakTime = 300; // 300s = 5 min
-const longBreakTime = 600; // 600s = 10 min
+const pomodoroTime = 5; // 1500s = 25 min
+const shortBreakTime = 2; // 300s = 5 min
+const longBreakTime = 3; // 600s = 10 min
+const cyclesBeforeLongBreak = 4;
 
 const PomodoroTimer = () => {
   const [timeLeft, setTimeLeft] = useState(pomodoroTime);
   const [isRunning, setIsRunning] = useState(false);
   const [isBreak, setIsBreak] = useState(false);
+  const [cycles, setCycles] = useState(0);
 
   const startTimer = () => setIsRunning(true);
   const stopTimer = () => setIsRunning(false);
@@ -32,11 +34,26 @@ const PomodoroTimer = () => {
         setTimeLeft(timeLeft - 1);
       }, 1000);
     } else if (timeLeft === 0) {
-      setIsBreak(!isBreak);
-      setTimeLeft(isBreak ? pomodoroTime : shortBreakTime);
+      if (isBreak) {
+        setTimeLeft(pomodoroTime);
+        setIsBreak(false);
+      } else {
+        // increment cycles count
+        const newCycles = cycles + 1;
+        setCycles(newCycles);
+
+        // check if long break
+        if (newCycles % cyclesBeforeLongBreak === 0) {
+          setTimeLeft(longBreakTime);
+        } else {
+          setTimeLeft(shortBreakTime);
+        }
+
+        setIsBreak(true);
+      }
     }
     return () => clearInterval(timer);
-  }, [isRunning, timeLeft, isBreak]);
+  }, [isRunning, timeLeft, isBreak, cycles]);
 
   return (
     <div>
@@ -51,6 +68,7 @@ const PomodoroTimer = () => {
         Stop
       </button>
       <button onClick={resetTimer}>Reset</button>
+      <p>Cycles Completed: {cycles}</p> {/* Wyświetl liczbę cykli */}
     </div>
   );
 };
