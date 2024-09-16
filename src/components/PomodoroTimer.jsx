@@ -10,17 +10,27 @@ const PomodoroTimer = () => {
   const [isRunning, setIsRunning] = useState(false);
   const [isBreak, setIsBreak] = useState(false);
   const [cycles, setCycles] = useState(0);
+  const [soundEnabled, setSoundEnabled] = useState(true);
 
   // alarm
   const playAlarm = () => {
-    const audio = new Audio("/src/sounds/alarm.mp3");
-    audio.play();
+    if (soundEnabled) {
+      const audio = new Audio("/src/sounds/alarm.mp3");
+      audio.play();
+    }
   };
 
   // break
   const playBreak = () => {
-    const audio = new Audio("/src/sounds/break.mp3");
-    audio.play();
+    if (soundEnabled) {
+      const audio = new Audio("/src/sounds/break.mp3");
+      audio.play();
+    }
+  };
+
+  // toggle sound
+  const toggleSound = () => {
+    setSoundEnabled(!soundEnabled);
   };
 
   const startTimer = () => setIsRunning(true);
@@ -47,7 +57,7 @@ const PomodoroTimer = () => {
       }, 1000);
     } else if (timeLeft === 0) {
       if (isBreak) {
-        // play alarm
+        // play break
         playBreak();
 
         setTimeLeft(pomodoroTime);
@@ -86,6 +96,10 @@ const PomodoroTimer = () => {
       </button>
       <button onClick={resetTimer}>Reset</button>
       <p>Cycles Completed: {cycles}</p> {/* Wyświetl liczbę cykli */}
+      <label>
+        <input type="checkbox" checked={soundEnabled} onChange={toggleSound} />
+        Enable Sound
+      </label>
     </div>
   );
 };
