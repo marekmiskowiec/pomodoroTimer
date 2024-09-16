@@ -11,6 +11,18 @@ const PomodoroTimer = () => {
   const [isBreak, setIsBreak] = useState(false);
   const [cycles, setCycles] = useState(0);
 
+  // alarm
+  const playAlarm = () => {
+    const audio = new Audio("/src/sounds/alarm.mp3");
+    audio.play();
+  };
+
+  // break
+  const playBreak = () => {
+    const audio = new Audio("/src/sounds/break.mp3");
+    audio.play();
+  };
+
   const startTimer = () => setIsRunning(true);
   const stopTimer = () => setIsRunning(false);
   const resetTimer = () => {
@@ -35,6 +47,9 @@ const PomodoroTimer = () => {
       }, 1000);
     } else if (timeLeft === 0) {
       if (isBreak) {
+        // play alarm
+        playBreak();
+
         setTimeLeft(pomodoroTime);
         setIsBreak(false);
       } else {
@@ -48,6 +63,8 @@ const PomodoroTimer = () => {
         } else {
           setTimeLeft(shortBreakTime);
         }
+        // play alarm
+        playAlarm();
 
         setIsBreak(true);
       }
